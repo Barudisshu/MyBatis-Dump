@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.individuals.dao.StudentDao">
+    <resultMap id="BaseResultMap" type="net.individuals.model.Student">
+        <id column="id" property="id" jdbcType="TINYINT"/>
+        <result column="stuName" property="stuname" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="TINYINT"/>
+        <result column="sex" property="sex" jdbcType="CHAR"/>
+        <result column="gradeName" property="gradename" jdbcType="CHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, stuName, age, sex, gradeName
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_student
+        where id = #{id,jdbcType=TINYINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_student
+    where id = #{id,jdbcType=TINYINT}
+  </delete>
+    <insert id="insert" parameterType="net.individuals.model.Student">
+    insert into t_student (id, stuName, age, 
+      sex, gradeName)
+    values (#{id,jdbcType=TINYINT}, #{stuname,jdbcType=VARCHAR}, #{age,jdbcType=TINYINT},
+      #{sex,jdbcType=CHAR}, #{gradename,jdbcType=CHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="net.individuals.model.Student">
+        insert into t_student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="stuname != null">
+                stuName,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="gradename != null">
+                gradeName,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=TINYINT},
+            </if>
+            <if test="stuname != null">
+                #{stuname,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=TINYINT},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=CHAR},
+            </if>
+            <if test="gradename != null">
+                #{gradename,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="net.individuals.model.Student">
+        update t_student
+        <set>
+            <if test="stuname != null">
+                stuName = #{stuname,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=TINYINT},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=CHAR},
+            </if>
+            <if test="gradename != null">
+                gradeName = #{gradename,jdbcType=CHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=TINYINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="net.individuals.model.Student">
+    update t_student
+    set stuName = #{stuname,jdbcType=VARCHAR},
+      age = #{age,jdbcType=TINYINT},
+      sex = #{sex,jdbcType=CHAR},
+      gradeName = #{gradename,jdbcType=CHAR}
+    where id = #{id,jdbcType=TINYINT}
+  </update>
+    <select id="getAll" parameterType="net.individuals.model.Student" resultMap="BaseResultMap">
+        select * from t_student;
+    </select>
+</mapper>

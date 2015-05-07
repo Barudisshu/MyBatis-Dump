@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.individuals.dao.BookTypeDao">
+    <resultMap id="BaseResultMap" type="net.individuals.model.BookType">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="bookTypeName" property="booktypename" jdbcType="VARCHAR"/>
+        <result column="bookNum" property="booknum" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, bookTypeName, bookNum
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_booktype
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_booktype
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="net.individuals.model.BookType">
+    insert into t_booktype (id, bookTypeName, bookNum
+      )
+    values (#{id,jdbcType=INTEGER}, #{booktypename,jdbcType=VARCHAR}, #{booknum,jdbcType=INTEGER}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="net.individuals.model.BookType">
+        insert into t_booktype
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="booktypename != null">
+                bookTypeName,
+            </if>
+            <if test="booknum != null">
+                bookNum,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="booktypename != null">
+                #{booktypename,jdbcType=VARCHAR},
+            </if>
+            <if test="booknum != null">
+                #{booknum,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="net.individuals.model.BookType">
+        update t_booktype
+        <set>
+            <if test="booktypename != null">
+                bookTypeName = #{booktypename,jdbcType=VARCHAR},
+            </if>
+            <if test="booknum != null">
+                bookNum = #{booknum,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="net.individuals.model.BookType">
+    update t_booktype
+    set bookTypeName = #{booktypename,jdbcType=VARCHAR},
+      bookNum = #{booknum,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectBook" parameterType="java.lang.Integer" resultType="net.individuals.model.Book">
+        select
+          t_book.id,
+          t_book.bookName,
+          t_book.author,
+          t_book.publisher,
+          t_book.price
+        from
+          t_book
+        where t_book.id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <resultMap id="bookTypeResultMap" type="BookType" extends="BaseResultMap">
+        <collection property="bookList" column="id" javaType="list" select="selectBook"/>
+    </resultMap>
+
+    <!--方法一-->
+    <select id="getAll" resultMap="bookTypeResultMap">
+        select * from t_booktype
+    </select>
+
+    <!--方法二（推荐）-->
+    <resultMap id="bookTypeResultMap2" type="BookType" extends="BaseResultMap">
+        <collection property="bookList" javaType="list" ofType="Book">
+            <id property="id" column="book_Id"/>
+            <result property="bookname" column="book_name"/>
+            <result property="author" column="book_author"/>
+            <result property="publisher" column="book_publisher"/>
+            <result property="price" column="book_price"/>
+            <result property="booktypeid" column="book_typeId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAll2" resultMap="bookTypeResultMap2">
+      select
+        t.id,
+        t.bookNum,
+        t.bookTypeName,
+        b.id book_Id,
+        b.bookName book_name,
+        b.author book_author,
+        b.publisher book_publisher,
+        b.price book_price,
+        b.bookTypeId book_typeId
+      from
+        t_booktype t
+      join
+        t_book b
+      on
+        b.id = t.id
+    </select>
+</mapper>
